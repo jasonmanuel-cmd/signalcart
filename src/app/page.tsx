@@ -7,42 +7,45 @@ import FAQAccordion from '@/components/FAQAccordion'
 import { categories } from '@/data/categories'
 import { getFeaturedProducts, getNewArrivals } from '@/data/products'
 import { siteConfig } from '@/data/site'
-import { organizationSchema, localBusinessSchema } from '@/lib/schema'
 
 const homepageFAQs = [
-  { question: 'How does Signal Cart work?', answer: 'Browse our curated catalog, place an order, and choose pickup or local delivery in the Bakersfield area. We source items locally and coordinate fast pickup within hours.' },
-  { question: 'Is pickup really same-day?', answer: 'Most in-stock items are ready for pickup within 1–2 hours during operating hours. You will receive a text confirmation when your order is ready.' },
-  { question: 'What areas do you deliver to?', answer: 'We currently serve Bakersfield and the surrounding 15-mile radius. Delivery is available during operating hours.' },
-  { question: 'Do you require age verification?', answer: 'Some products may require age verification at pickup. Valid ID required for age-restricted items.' },
+  { question: 'How does Signal Cart work?', answer: 'Browse our curated catalog, place an order, and we ship across the US. We source quality products and coordinate fast fulfillment from Bakersfield, CA.' },
+  { question: 'How long does shipping take?', answer: 'Standard shipping takes 5–8 business days. Expedited options ship in 2–3 days. We ship nationwide from California.' },
+  { question: 'Do you ship to my state?', answer: 'We ship to all 50 US states. Some products may have state-specific restrictions — we verify compliance before every shipment.' },
+  { question: 'What is your return policy?', answer: 'We accept returns within 14 days of delivery. Items must be unopened and in original packaging. See our returns page for details.' },
 ]
 
 export default function HomePage() {
   const featured = getFeaturedProducts()
   const newArrivals = getNewArrivals()
 
-  const orgJsonLd = organizationSchema(siteConfig)
-  const localJsonLd = localBusinessSchema(siteConfig, 'Bakersfield')
-
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localJsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: siteConfig.name,
+            url: `https://${siteConfig.domain}`,
+            description: siteConfig.description,
+            contactPoint: { '@type': 'ContactPoint', email: siteConfig.email, contactType: 'customer service' },
+          })
+        }}
       />
 
       <HeroSection />
-
       <TrustStrip />
 
       <section className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-white">Shop by Category</h2>
-            <Link href="/categories" className="text-[#2d8c7f] text-sm font-medium hover:text-[#3aa89a] transition-colors">
+            <div>
+              <span className="text-[#c8914a] text-xs font-semibold uppercase tracking-widest">Categories</span>
+              <h2 className="text-2xl md:text-3xl font-bold text-[#1a1a1a] mt-2">Shop by Category</h2>
+            </div>
+            <Link href="/categories" className="text-[#1b7a6e] text-sm font-medium hover:text-[#145c52] transition-colors">
               View all &rarr;
             </Link>
           </div>
@@ -54,11 +57,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-white/[0.01] border-t border-white/5">
+      <section className="py-16 md:py-24 bg-[#f0ede8]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-white">Featured Products</h2>
-            <Link href="/shop" className="text-[#2d8c7f] text-sm font-medium hover:text-[#3aa89a] transition-colors">
+            <div>
+              <span className="text-[#c8914a] text-xs font-semibold uppercase tracking-widest">Featured</span>
+              <h2 className="text-2xl md:text-3xl font-bold text-[#1a1a1a] mt-2">Featured Products</h2>
+            </div>
+            <Link href="/shop" className="text-[#1b7a6e] text-sm font-medium hover:text-[#145c52] transition-colors">
               Shop all &rarr;
             </Link>
           </div>
@@ -69,8 +75,11 @@ export default function HomePage() {
       <section className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-white">New Arrivals</h2>
-            <Link href="/shop?sort=newest" className="text-[#2d8c7f] text-sm font-medium hover:text-[#3aa89a] transition-colors">
+            <div>
+              <span className="text-[#c8914a] text-xs font-semibold uppercase tracking-widest">New</span>
+              <h2 className="text-2xl md:text-3xl font-bold text-[#1a1a1a] mt-2">New Arrivals</h2>
+            </div>
+            <Link href="/shop?sort=newest" className="text-[#1b7a6e] text-sm font-medium hover:text-[#145c52] transition-colors">
               View all &rarr;
             </Link>
           </div>
@@ -78,38 +87,39 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-white/[0.01] border-t border-white/5">
+      <section className="py-16 md:py-24 bg-[#f0ede8]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <span className="text-[#2d8c7f] text-sm font-semibold tracking-widest uppercase">Local Access</span>
-              <h2 className="text-3xl font-bold text-white mt-3">Available near you, not just online</h2>
-              <p className="text-white/50 mt-4 leading-relaxed">
-                Every product on Signal Cart is sourced with local access in mind. We organize the best 
-                selection from Bakersfield suppliers so you can browse, buy, and pick up without the wait.
+              <span className="text-[#c8914a] text-xs font-semibold uppercase tracking-widest">Shipping</span>
+              <h2 className="text-2xl md:text-3xl font-bold text-[#1a1a1a] mt-2">Fast, reliable shipping across the US</h2>
+              <p className="text-[#6b6560] mt-4 leading-relaxed">
+                Every order is packed with care and shipped from our facility in Bakersfield, CA. 
+                We partner with USPS, UPS, and FedEx to get your order to you quickly and reliably.
               </p>
               <ul className="mt-6 space-y-3">
                 {[
-                  'Same-day pickup in Bakersfield',
-                  'Local delivery within 15 miles',
-                  'Curated selection, not random inventory',
-                  'Real-time availability updates',
+                  'Free shipping on orders over $75',
+                  'Standard (5–8 days) or expedited (2–3 days)',
+                  'Tracked shipping on every order',
+                  'Discreet, secure packaging',
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-white/70 text-sm">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#2d8c7f] shrink-0" />
+                  <li key={item} className="flex items-center gap-3 text-[#6b6560] text-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#1b7a6e] shrink-0" />
                     {item}
                   </li>
                 ))}
               </ul>
               <Link
-                href="/location/bakersfield"
-                className="inline-flex items-center mt-8 px-6 py-3 bg-[#2d8c7f] text-white text-sm font-semibold rounded-lg hover:bg-[#3aa89a] transition-colors"
+                href="/shipping"
+                className="inline-flex items-center mt-8 px-6 py-3 bg-[#c8914a] text-white text-sm font-semibold rounded-lg hover:bg-[#b8803a] transition-all"
               >
-                Bakersfield Local Page
+                Shipping Details
               </Link>
             </div>
-            <div className="bg-white/[0.02] border border-white/5 rounded-xl p-8">
-              <h3 className="text-white font-semibold text-lg">Frequently Asked</h3>
+            <div className="bg-white border border-[#e5e0da] rounded-xl p-8">
+              <h3 className="text-[#1a1a1a] font-semibold text-lg mb-1">Frequently Asked</h3>
+              <p className="text-[#6b6560] text-sm mb-4">Quick answers to common questions</p>
               <FAQAccordion items={homepageFAQs} />
             </div>
           </div>

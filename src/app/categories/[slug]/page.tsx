@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { categories } from '@/data/categories'
 import { getProductsByCategory } from '@/data/products'
@@ -27,36 +28,38 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   if (!category) notFound()
 
   const categoryProducts = getProductsByCategory(slug)
-  const faqJsonLd = faqSchema(category.faqBlock)
-  const breadcrumbJsonLd = breadcrumbSchema([
-    { name: 'Home', url: `https://${siteConfig.domain}/` },
-    { name: 'Categories', url: `https://${siteConfig.domain}/categories` },
-    { name: category.name, url: `https://${siteConfig.domain}/categories/${category.slug}` },
-  ])
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(category.faqBlock)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
+        __html: JSON.stringify(breadcrumbSchema([
+          { name: 'Home', url: `https://${siteConfig.domain}/` },
+          { name: 'Categories', url: `https://${siteConfig.domain}/categories` },
+          { name: category.name, url: `https://${siteConfig.domain}/categories/${category.slug}` },
+        ]))
+      }} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-        <nav className="flex items-center gap-2 text-sm text-white/30 mb-8">
-          <a href="/" className="hover:text-white/60">Home</a><span>/</span>
-          <a href="/categories" className="hover:text-white/60">Categories</a><span>/</span>
-          <span className="text-white/50">{category.name}</span>
+        <nav className="flex items-center gap-2 text-sm text-[#9c958e] mb-8">
+          <Link href="/" className="hover:text-[#1a1a1a] transition-colors">Home</Link>
+          <span>/</span>
+          <Link href="/categories" className="hover:text-[#1a1a1a] transition-colors">Categories</Link>
+          <span>/</span>
+          <span className="text-[#6b6560]">{category.name}</span>
         </nav>
 
         <div className="mb-10">
-          <span className="text-[#2d8c7f] text-sm font-semibold tracking-widest uppercase">Category</span>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mt-2">{category.name}</h1>
-          <p className="text-white/50 mt-4 max-w-2xl leading-relaxed">{category.heroCopy}</p>
+          <span className="text-[#c8914a] text-xs font-semibold uppercase tracking-widest">Category</span>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mt-2">{category.name}</h1>
+          <p className="text-[#6b6560] mt-4 max-w-2xl leading-relaxed">{category.heroCopy}</p>
         </div>
 
         <ProductGrid products={categoryProducts} />
 
         {category.faqBlock.length > 0 && (
-          <div className="mt-16 pt-12 border-t border-white/5">
-            <FAQAccordion items={category.faqBlock} title={`${category.name} — FAQ`} />
+          <div className="mt-16 pt-12 border-t border-[#e5e0da]">
+            <FAQAccordion items={category.faqBlock} />
           </div>
         )}
       </div>

@@ -1,46 +1,40 @@
 import { Product } from '@/types'
+import fs from 'fs'
+import path from 'path'
 
-const PRODUCTS_BLOB_KEY = 'signalcart-products.json'
+const ADMIN_DATA_DIR = path.join(process.cwd(), 'src', 'data')
+const ADMIN_FILE = path.join(ADMIN_DATA_DIR, 'admin-products.json')
 
 function slug(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 
-async function readBlobJson(): Promise<Product[]> {
+function readAdminProducts(): Product[] {
   try {
-    const { list, get } = await import('@vercel/blob')
-    const { blobs } = await list({ prefix: PRODUCTS_BLOB_KEY })
-    if (blobs.length === 0) return []
-    const result = await get(blobs[0].url, { access: 'public' })
-    if (!result || !result.stream) return []
-    const reader = result.stream.getReader()
-    const decoder = new TextDecoder()
-    let text = ''
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) break
-      text += decoder.decode(value, { stream: true })
+    if (fs.existsSync(ADMIN_FILE)) {
+      return JSON.parse(fs.readFileSync(ADMIN_FILE, 'utf-8'))
     }
-    text += decoder.decode()
-    return JSON.parse(text)
+  } catch {}
+  return []
+}
+
+function writeAdminProducts(products: Product[]) {
+  try {
+    fs.writeFileSync(ADMIN_FILE, JSON.stringify(products, null, 2), 'utf-8')
   } catch (e) {
-    console.log('Blob read skipped (first build or no blob configured):', (e as Error)?.message)
-    return []
+    console.error('Failed to persist admin products:', e)
   }
 }
 
 export async function getProducts(): Promise<Product[]> {
   const { products: staticProducts } = await import('@/data/products')
-  let overrides: Product[] = []
-  try {
-    overrides = await readBlobJson()
-  } catch {}
+  const adminProducts = readAdminProducts()
 
   const staticMap = new Map(staticProducts.map((p) => [p.slug, p]))
-  const overrideMap = new Map(overrides.map((p) => [p.slug, p]))
-  const merged = [...staticMap.entries()].map(([slug, p]) => overrideMap.get(slug) || p)
-  const newSlugs = overrides.filter((p) => !staticMap.has(p.slug))
-  return [...merged, ...newSlugs]
+  const adminMap = new Map(adminProducts.map((p) => [p.slug, p]))
+  const merged = [...staticMap.entries()].map(([slug, p]) => adminMap.get(slug) || p)
+  const newFromAdmin = adminProducts.filter((p) => !staticMap.has(p.slug))
+  return [...merged, ...newFromAdmin]
 }
 
 export async function saveProduct(product: Omit<Product, 'slug' | 'id'> & { slug?: string; id?: string }): Promise<Product> {
@@ -59,35 +53,26 @@ export async function saveProduct(product: Omit<Product, 'slug' | 'id'> & { slug
   }
   const filtered = all.filter((p) => p.slug !== newSlug)
   filtered.push(updated)
-  await persistProducts(filtered)
+  writeAdminProducts(filtered)
   return updated
 }
 
 export async function deleteProduct(slug: string): Promise<void> {
   const all = await getProducts()
   const filtered = all.filter((p) => p.slug !== slug)
-  await persistProducts(filtered)
-}
-
-async function persistProducts(products: Product[]): Promise<void> {
-  try {
-    const { put } = await import('@vercel/blob')
-    await put(PRODUCTS_BLOB_KEY, JSON.stringify(products, null, 2), {
-      access: 'public',
-      addRandomSuffix: false,
-    })
-  } catch (e) {
-    console.error('Failed to persist products:', e)
-  }
+  writeAdminProducts(filtered)
 }
 
 export async function uploadImage(file: File): Promise<string> {
+  const ext = file.name.split('.').pop() || 'jpg'
+  const fileName = `${Date.now()}.${ext}`
+  const publicDir = path.join(process.cwd(), 'public', 'images', 'products')
+
   try {
-    const { put } = await import('@vercel/blob')
-    const ext = file.name.split('.').pop() || 'jpg'
-    const key = `products/${Date.now()}.${ext}`
-    const blob = await put(key, file, { access: 'public' })
-    return blob.url
+    if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir, { recursive: true })
+    const buffer = Buffer.from(await file.arrayBuffer())
+    fs.writeFileSync(path.join(publicDir, fileName), buffer)
+    return `/images/products/${fileName}`
   } catch {
     return '/images/products/placeholder.jpg'
   }

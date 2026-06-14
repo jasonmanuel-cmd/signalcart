@@ -3,11 +3,11 @@ import { SiteConfig } from '@/types'
 export const siteConfig: SiteConfig = {
   name: 'Signal Cart',
   domain: 'signalcart.shop',
-  tagline: 'Curated local access. Fast.',
-  description: 'Signal Cart connects you to curated products available for fast local pickup and delivery in Bakersfield. Organized. Reliable. Nearby.',
+  tagline: 'Curated essentials. Shipped nationwide.',
+  description: 'Premium smoking accessories and organizational tools delivered across the United States. Curated selection, reliable shipping, trusted service.',
   email: 'hello@signalcart.shop',
   phone: '(661) 000-0000',
-  address: 'Bakersfield, CA',
+  address: 'Bakersfield, CA 93301',
   city: 'Bakersfield',
   state: 'CA',
   zip: '93301',
@@ -16,22 +16,20 @@ export const siteConfig: SiteConfig = {
   },
 }
 
-export const locations = [
-  {
-    slug: 'bakersfield',
-    name: 'Bakersfield',
-    state: 'California',
-    deliveryRadius: '15 miles',
-    pickupAvailable: true,
-    deliveryAvailable: true,
-    hours: 'Mon–Sat 10am–8pm, Sun 11am–6pm',
-  },
-]
+export const shippingConfig = {
+  freeThreshold: 75,
+  standardRate: 5.99,
+  standardDays: '5–8',
+  expeditedRate: 12.99,
+  expeditedDays: '2–3',
+  carriers: ['USPS', 'UPS', 'FedEx'],
+  originZip: '93301',
+}
 
 export const navLinks = [
-  { href: '/shop', label: 'Shop' },
+  { href: '/shop', label: 'Shop All' },
   { href: '/categories', label: 'Categories' },
-  { href: '/location/bakersfield', label: 'Bakersfield' },
+  { href: '/shipping', label: 'Shipping' },
   { href: '/faq', label: 'FAQ' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
