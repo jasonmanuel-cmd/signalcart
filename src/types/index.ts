@@ -16,6 +16,8 @@ export interface Product {
   bestseller: boolean
   tags: string[]
   sourceUrl: string
+  qtyPrices?: { 1: number; 5: number; 10: number; box: number }
+  boxQty?: number
 }
 
 export interface Category {

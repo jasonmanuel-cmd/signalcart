@@ -87,6 +87,24 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
             <p className="text-[#6b6560] text-sm mt-6 leading-relaxed">{product.shortDescription}</p>
 
+            {product.qtyPrices && (
+              <div className="mt-6 bg-[#f8f6f2] border border-[#e5e0da] rounded-xl p-4">
+                <h3 className="text-sm font-semibold text-[#1a1a1a] mb-3">Quantity Pricing</h3>
+                <div className="grid grid-cols-4 gap-2">
+                  {([1, 5, 10, 'box'] as const).map((qty) => {
+                    const label = qty === 'box' ? `Box (${product.boxQty || 20})` : `${qty}`
+                    const price = product.qtyPrices![qty]
+                    return (
+                      <div key={qty} className={`text-center p-2 rounded-lg border transition-all cursor-pointer ${qty === 1 ? 'border-[#c8914a] bg-[#fff8e5]' : 'border-[#e5e0da] hover:border-[#c8914a]'}`}>
+                        <span className="text-[10px] font-medium text-[#9c958e] uppercase">{label}</span>
+                        <span className="block text-sm font-bold text-[#1a1a1a] mt-0.5">${price.toFixed(2)}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
             <div className="mt-6 space-y-3">
               <div className="flex items-center gap-3 text-sm">
                 <span className="w-2 h-2 rounded-full bg-[#1b7a6e] shrink-0" />

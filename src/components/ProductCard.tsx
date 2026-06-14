@@ -35,9 +35,9 @@ export default function ProductCard({ product }: { product: Product }) {
               -{discountPercent}%
             </span>
           )}
-          {product.stockType === 'local' && (
-            <span className="absolute top-3 right-3 px-2 py-1 bg-[#e8f5f3] text-[#1b7a6e] text-[10px] font-medium rounded-md">
-              In Stock
+          {product.qtyPrices && (
+            <span className="absolute top-3 right-3 px-2 py-1 bg-[#fff8e5] text-[#c8914a] text-[10px] font-medium rounded-md">
+              Bulk Pricing
             </span>
           )}
         </div>
@@ -52,6 +52,9 @@ export default function ProductCard({ product }: { product: Product }) {
               <span className="text-sm text-[#9c958e] line-through">${product.compareAtPrice!.toFixed(2)}</span>
             )}
           </div>
+          {product.qtyPrices && (
+            <span className="text-[10px] text-[#c8914a] font-medium mt-1 block">Bulk discounts at 5, 10 & box qty</span>
+          )}
         </div>
       </article>
     </Link>
