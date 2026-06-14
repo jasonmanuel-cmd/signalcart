@@ -1,0 +1,30 @@
+export const brand = {
+  name: 'Signal Cart',
+  tagline: 'Curated local access. Fast.',
+  taglineAlt: 'Signal over clutter.',
+  description: 'Your local-access retail system for curated products, fast pickup, and organized delivery in Bakersfield.',
+  colors: {
+    graphite: '#1a1a1a',
+    graphiteLight: '#2a2a2a',
+    graphiteMuted: '#6b6b6b',
+    bone: '#f5f3ee',
+    boneDark: '#e8e4dc',
+    teal: '#2d8c7f',
+    tealLight: '#3aa89a',
+    tealDark: '#1f6b61',
+    cream: '#faf8f4',
+    white: '#ffffff',
+    error: '#dc2626',
+    success: '#16a34a',
+  },
+  fonts: {
+    sans: 'Inter, ui-sans-serif, system-ui, -apple-system, sans-serif',
+    display: 'Inter, ui-sans-serif, system-ui, -apple-system, sans-serif',
+    mono: 'ui-monospace, SFMono-Regular, monospace',
+  },
+  spacing: {
+    section: 'py-16 md:py-24',
+    container: 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
+    grid: 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6',
+  },
+} as const
