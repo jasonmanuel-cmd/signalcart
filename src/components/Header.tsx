@@ -4,9 +4,11 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { siteConfig, navLinks } from '@/data/site'
+import { useCart } from '@/context/CartContext'
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { itemCount } = useCart()
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-[#e5e0da]">
@@ -37,7 +39,22 @@ export default function Header() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Link
+              href="/cart"
+              className="relative p-2 text-[#6b6560] hover:text-[#1a1a1a] transition-colors"
+              aria-label={`Cart (${itemCount} items)`}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6" />
+              </svg>
+              {itemCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4.5 h-4.5 flex items-center justify-center bg-[#c8914a] text-white text-[9px] font-bold rounded-full min-w-[18px] min-h-[18px]">
+                  {itemCount > 99 ? '99+' : itemCount}
+                </span>
+              )}
+            </Link>
             <Link
               href="/shop"
               className="hidden sm:inline-flex px-5 py-2.5 bg-[#c8914a] text-white text-sm font-semibold rounded-lg hover:bg-[#b8803a] transition-all hover:shadow-lg hover:shadow-[#c8914a]/20"

@@ -7,6 +7,7 @@ import { siteConfig, shippingConfig } from '@/data/site'
 import { formatPrice } from '@/lib/utils'
 import { productSchema, breadcrumbSchema } from '@/lib/schema'
 import ProductGrid from '@/components/ProductGrid'
+import AddToCartSection from '@/components/AddToCartSection'
 
 export async function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }))
@@ -120,17 +121,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 mt-8">
-              <button className="flex-1 px-6 py-3.5 bg-[#c8914a] text-white text-sm font-semibold rounded-lg hover:bg-[#b8803a] transition-all hover:shadow-lg hover:shadow-[#c8914a]/20">
-                Add to Cart — {formatPrice(product.price)}
-              </button>
-              <Link
-                href="/checkout"
-                className="px-6 py-3.5 border border-[#e5e0da] text-[#1a1a1a] text-sm font-semibold rounded-lg hover:bg-[#f0ede8] text-center transition-all"
-              >
-                Buy Now
-              </Link>
-            </div>
+            <AddToCartSection product={product} />
 
             <div className="mt-6 pt-6 border-t border-[#e5e0da]">
               <div className="flex items-center gap-4 text-xs text-[#9c958e]">
